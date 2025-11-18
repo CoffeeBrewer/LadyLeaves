@@ -1,0 +1,446 @@
+// app.js - Leaf ($LEAVES) Dashboard & Staking dApp structure
+
+// ===================== BASIC HELPERS ===================== //
+
+function $(selector) {
+  return document.querySelector(selector);
+}
+
+function $all(selector) {
+  return document.querySelectorAll(selector);
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function shortAddress(addr, length = 4) {
+  if (!addr || addr.length < 10) return addr || "";
+  return addr.slice(0, 2 + length) + "..." + addr.slice(-length);
+}
+
+function formatNumber(num, decimals = 0) {
+  if (num === null || num === undefined || isNaN(num)) return "--";
+  return Number(num).toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  });
+}
+
+function formatTokenAmount(num, symbol = "LEAVES", decimals = 2) {
+  return `${formatNumber(num, decimals)} ${symbol}`;
+}
+
+function formatCurrency(num, currency = "USD", decimals = 2) {
+  if (num === null || num === undefined || isNaN(num)) return "--";
+  return new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  }).format(num);
+}
+
+// Very simple time-ago formatter for demo
+function timeAgo(date) {
+  if (!date) return "";
+  const now = new Date();
+  const diff = Math.max(0, now - date);
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 60) return "Just now";
+  if (minutes < 60) return `${minutes} min ago`;
+  if (hours < 24) return `${hours}h ago`;
+  return `${days}d ago`;
+}
+
+// ===================== DUMMY DATA (PLACEHOLDERS) ===================== //
+// TODO: Replace with real RPC / API calls to Ladychain
+
+const DummyApi = {
+  async fetchDashboardStats() {
+    // simulate API delay
+    await new Promise((res) => setTimeout(res, 300));
+
+    return {
+      totalSupply: 100_000_000,
+      circulatingSupply: 92_500_000,
+      totalBurned: 7_500_000,
+      totalReflections: 1_250_000,
+      holderCount: 1842,
+      txCount: 25_137,
+      marketCapUsd: 1_250_000,
+      tokenPriceUsd: 0.0135
+    };
+  },
+
+  async fetchLatestTransactions(limit = 10) {
+    await new Promise((res) => setTimeout(res, 300));
+
+    const now = new Date();
+    return Array.from({ length: limit }).map((_, i) => ({
+      hash: "0x" + Math.random().toString(16).slice(2).padEnd(10, "0"),
+      from: "0xFromWallet" + (1000 + i),
+      to: "0xToWallet" + (2000 + i),
+      amount: 1000 + i * 10,
+      timestamp: new Date(now - i * 600_000) // every 10 min
+    }));
+  },
+
+  async fetchStakingData() {
+    await new Promise((res) => setTimeout(res, 300));
+
+    return {
+      wallet: {
+        address: null, // filled on connect
+        balance: 15_000
+      },
+      overview: {
+        totalStaked: 8_000,
+        totalPendingRewards: 420
+      },
+      pools: {
+        flexible: {
+          apr: 12,
+          tvl: 50_000,
+          userStaked: 2_500,
+          userRewards: 100,
+          minStake: 100,
+          hasPenalty: false,
+          lockDurationDays: 0
+        },
+        "30days": {
+          apr: 24,
+          tvl: 25_000,
+          userStaked: 3_000,
+          userRewards: 150,
+          minStake: 250,
+          hasPenalty: true,
+          lockDurationDays: 30
+        },
+        "90days": {
+          apr: 48,
+          tvl: 15_000,
+          userStaked: 2_500,
+          userRewards: 170,
+          minStake: 500,
+          hasPenalty: true,
+          lockDurationDays: 90
+        }
+      }
+    };
+  }
+};
+
+// ===================== STATE ===================== //
+
+const AppState = {
+  walletAddress: null,
+  stakingData: null,
+  dashboardStats: null,
+  latestTx: []
+};
+
+// ===================== RENDER FUNCTIONS ===================== //
+
+function renderCurrentYear() {
+  setText("current-year", new Date().getFullYear());
+}
+
+function renderDashboard(stats) {
+  if (!stats) return;
+  setText("total-supply", formatNumber(stats.totalSupply));
+  setText("circulating-supply", formatNumber(stats.circulatingSupply));
+  setText("total-burned", formatNumber(stats.totalBurned));
+  setText("total-reflections", formatNumber(stats.totalReflections));
+  setText("wallet-count", formatNumber(stats.holderCount));
+  setText("tx-count", formatNumber(stats.txCount));
+  setText("market-cap", formatCurrency(stats.marketCapUsd));
+  setText("token-price", `$${formatNumber(stats.tokenPriceUsd, 4)}`);
+}
+
+function renderLatestTransactions(txs) {
+  const tbody = $("#latest-tx-body");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  if (!txs || txs.length === 0) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 5;
+    cell.textContent = "No recent transactions found.";
+    row.appendChild(cell);
+    tbody.appendChild(row);
+    return;
+  }
+
+  txs.forEach((tx) => {
+    const tr = document.createElement("tr");
+
+    const hashTd = document.createElement("td");
+    hashTd.className = "hash-cell";
+    hashTd.textContent = shortAddress(tx.hash, 4);
+    tr.appendChild(hashTd);
+
+    const fromTd = document.createElement("td");
+    fromTd.textContent = shortAddress(tx.from);
+    tr.appendChild(fromTd);
+
+    const toTd = document.createElement("td");
+    toTd.textContent = shortAddress(tx.to);
+    tr.appendChild(toTd);
+
+    const amountTd = document.createElement("td");
+    amountTd.textContent = formatTokenAmount(tx.amount);
+    tr.appendChild(amountTd);
+
+    const timeTd = document.createElement("td");
+    timeTd.textContent = timeAgo(tx.timestamp);
+    tr.appendChild(timeTd);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function renderStakingOverview(data) {
+  if (!data) return;
+
+  const walletLabel = data.wallet.address
+    ? shortAddress(data.wallet.address)
+    : "Not connected";
+
+  setText("connected-wallet", walletLabel);
+  setText("wallet-balance", formatTokenAmount(data.wallet.balance));
+  setText("total-staked", formatTokenAmount(data.overview.totalStaked));
+  setText(
+    "total-pending-rewards",
+    formatTokenAmount(data.overview.totalPendingRewards)
+  );
+}
+
+function renderStakingPools(data) {
+  if (!data || !data.pools) return;
+
+  const flex = data.pools.flexible;
+  if (flex) {
+    setText("pool-flexible-apr", `${flex.apr}%`);
+    setText("pool-flexible-tvl", formatTokenAmount(flex.tvl));
+    setText("pool-flexible-staked", formatTokenAmount(flex.userStaked));
+    setText("pool-flexible-rewards", formatTokenAmount(flex.userRewards));
+  }
+
+  const p30 = data.pools["30days"];
+  if (p30) {
+    setText("pool-30-apr", `${p30.apr}%`);
+    setText("pool-30-tvl", formatTokenAmount(p30.tvl));
+    setText("pool-30-staked", formatTokenAmount(p30.userStaked));
+    setText("pool-30-rewards", formatTokenAmount(p30.userRewards));
+  }
+
+  const p90 = data.pools["90days"];
+  if (p90) {
+    setText("pool-90-apr", `${p90.apr}%`);
+    setText("pool-90-tvl", formatTokenAmount(p90.tvl));
+    setText("pool-90-staked", formatTokenAmount(p90.userStaked));
+    setText("pool-90-rewards", formatTokenAmount(p90.userRewards));
+  }
+}
+
+// ===================== EARNINGS SIMULATOR LOGIC ===================== //
+
+function getPoolApr(poolId) {
+  if (AppState.stakingData && AppState.stakingData.pools) {
+    const pool = AppState.stakingData.pools[poolId];
+    if (pool && typeof pool.apr === "number") {
+      return pool.apr;
+    }
+  }
+
+  const fallback = {
+    flexible: 12,
+    "30days": 24,
+    "90days": 48
+  };
+  return fallback[poolId] ?? 0;
+}
+
+function simulateEarnings(amount, days, apr) {
+  const principal = Number(amount);
+  const d = Number(days);
+  const a = Number(apr);
+
+  if (isNaN(principal) || principal <= 0 || isNaN(d) || d <= 0 || isNaN(a) || a <= 0) {
+    return {
+      rewards: 0,
+      total: 0,
+      dailyYield: 0
+    };
+  }
+
+  // Simple APR formula: rewards = principal * (apr% / 100) * (days / 365)
+  const rewards = principal * (a / 100) * (d / 365);
+  const total = principal + rewards;
+  const dailyYield = rewards / d;
+
+  return {
+    rewards,
+    total,
+    dailyYield
+  };
+}
+
+function initEarningsSimulator() {
+  const amountInput = document.getElementById("sim-amount");
+  const daysInput = document.getElementById("sim-days");
+  const poolSelect = document.getElementById("sim-pool");
+  const calcBtn = document.getElementById("sim-calc-btn");
+
+  if (!amountInput || !daysInput || !poolSelect || !calcBtn) return;
+
+  const update = () => {
+    const amount = parseFloat(amountInput.value);
+    const days = parseInt(daysInput.value, 10);
+    const poolId = poolSelect.value;
+
+    const apr = getPoolApr(poolId);
+    const { rewards, total, dailyYield } = simulateEarnings(amount, days, apr);
+
+    setText("sim-apr", `${formatNumber(apr, 2)}%`);
+
+    if (!amount || !days || amount <= 0 || days <= 0) {
+      setText("sim-rewards", "-- $LEAVES");
+      setText("sim-total", "-- $LEAVES");
+      setText("sim-daily-yield", "-- $LEAVES / day");
+      return;
+    }
+
+    setText("sim-rewards", formatTokenAmount(rewards, "LEAVES", 4));
+    setText("sim-total", formatTokenAmount(total, "LEAVES", 4));
+    setText(
+      "sim-daily-yield",
+      `${formatTokenAmount(dailyYield, "LEAVES", 4)} / day`
+    );
+  };
+
+  calcBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    update();
+  });
+
+  amountInput.addEventListener("input", update);
+  daysInput.addEventListener("input", update);
+  poolSelect.addEventListener("change", update);
+}
+
+// ===================== WALLET CONNECT (SKELETON) ===================== //
+
+async function connectWallet() {
+  // TODO: replace with real EVM provider logic for Ladychain
+  const fakeAddress = "0xLeafHolder1234567890abcdef";
+  AppState.walletAddress = fakeAddress;
+
+  if (!AppState.stakingData) {
+    AppState.stakingData = await DummyApi.fetchStakingData();
+  }
+
+  AppState.stakingData.wallet.address = fakeAddress;
+
+  renderStakingOverview(AppState.stakingData);
+
+  console.log("Wallet connected:", fakeAddress);
+  alert("Demo: Wallet connected as " + shortAddress(fakeAddress));
+}
+
+function initWalletButton() {
+  const btn = $("#connect-wallet-btn");
+  const stakingBtn = document.querySelector(".staking-connect-btn");
+
+  if (btn) {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      connectWallet();
+    });
+  }
+
+  if (stakingBtn) {
+    stakingBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      connectWallet();
+    });
+  }
+}
+
+// ===================== STAKING ACTION HANDLERS (SKELETON) ===================== //
+
+function initStakingButtons() {
+  const poolCards = $all(".pool-card");
+
+  poolCards.forEach((card) => {
+    const poolId = card.getAttribute("data-pool-id");
+    const input = card.querySelector("input[type='number']");
+    const [stakeBtn, unstakeBtn, claimBtn] = card.querySelectorAll(
+      ".pool-buttons .btn"
+    );
+
+    if (stakeBtn) {
+      stakeBtn.addEventListener("click", () => {
+        const amount = Number(input?.value || 0);
+        console.log(`Stake clicked | pool=${poolId} | amount=${amount}`);
+        alert(`Demo: Stake ${amount} LEAVES in pool ${poolId}`);
+        // TODO: call staking contract method here
+      });
+    }
+
+    if (unstakeBtn) {
+      unstakeBtn.addEventListener("click", () => {
+        console.log(`Unstake clicked | pool=${poolId}`);
+        alert(`Demo: Unstake from pool ${poolId}`);
+        // TODO: call unstake method here
+      });
+    }
+
+    if (claimBtn) {
+      claimBtn.addEventListener("click", () => {
+        console.log(`Claim rewards clicked | pool=${poolId}`);
+        alert(`Demo: Claim rewards from pool ${poolId}`);
+        // TODO: call claim rewards method here
+      });
+    }
+  });
+}
+
+// ===================== INIT / MAIN ===================== //
+
+async function loadInitialData() {
+  try {
+    const stats = await DummyApi.fetchDashboardStats();
+    AppState.dashboardStats = stats;
+    renderDashboard(stats);
+
+    const txs = await DummyApi.fetchLatestTransactions(10);
+    AppState.latestTx = txs;
+    renderLatestTransactions(txs);
+
+    const stakingData = await DummyApi.fetchStakingData();
+    AppState.stakingData = stakingData;
+    renderStakingOverview(stakingData);
+    renderStakingPools(stakingData);
+  } catch (err) {
+    console.error("Error loading initial data:", err);
+  }
+}
+
+function initApp() {
+  renderCurrentYear();
+  initWalletButton();
+  initStakingButtons();
+  initEarningsSimulator();
+  loadInitialData();
+}
+
+document.addEventListener("DOMContentLoaded", initApp);
