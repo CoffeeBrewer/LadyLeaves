@@ -1,4 +1,4 @@
-// app.js - Leaf ($LEAVES) Dashboard & Staking dApp structure
+// app.js - CoffeeHolics ($BEANS) Dashboard & Staking dApp structure
 
 // ===================== BASIC HELPERS ===================== //
 
@@ -28,7 +28,7 @@ function formatNumber(num, decimals = 0) {
   });
 }
 
-function formatTokenAmount(num, symbol = "LEAVES", decimals = 2) {
+function formatTokenAmount(num, symbol = "BEANS", decimals = 2) {
   return `${formatNumber(num, decimals)} ${symbol}`;
 }
 
@@ -63,7 +63,6 @@ function timeAgo(date) {
 
 const DummyApi = {
   async fetchDashboardStats() {
-    // simulate API delay
     await new Promise((res) => setTimeout(res, 300));
 
     return {
@@ -84,8 +83,8 @@ const DummyApi = {
     const now = new Date();
     return Array.from({ length: limit }).map((_, i) => ({
       hash: "0x" + Math.random().toString(16).slice(2).padEnd(10, "0"),
-      from: "0xFromWallet" + (1000 + i),
-      to: "0xToWallet" + (2000 + i),
+      from: "0xCoffeeFrom" + (1000 + i),
+      to: "0xCoffeeTo" + (2000 + i),
       amount: 1000 + i * 10,
       timestamp: new Date(now - i * 600_000) // every 10 min
     }));
@@ -96,7 +95,7 @@ const DummyApi = {
 
     return {
       wallet: {
-        address: null, // filled on connect
+        address: null,
         balance: 15_000
       },
       overview: {
@@ -215,11 +214,11 @@ function renderStakingOverview(data) {
     : "Not connected";
 
   setText("connected-wallet", walletLabel);
-  setText("wallet-balance", formatTokenAmount(data.wallet.balance));
-  setText("total-staked", formatTokenAmount(data.overview.totalStaked));
+  setText("wallet-balance", formatTokenAmount(data.wallet.balance, "BEANS"));
+  setText("total-staked", formatTokenAmount(data.overview.totalStaked, "BEANS"));
   setText(
     "total-pending-rewards",
-    formatTokenAmount(data.overview.totalPendingRewards)
+    formatTokenAmount(data.overview.totalPendingRewards, "BEANS")
   );
 }
 
@@ -229,25 +228,25 @@ function renderStakingPools(data) {
   const flex = data.pools.flexible;
   if (flex) {
     setText("pool-flexible-apr", `${flex.apr}%`);
-    setText("pool-flexible-tvl", formatTokenAmount(flex.tvl));
-    setText("pool-flexible-staked", formatTokenAmount(flex.userStaked));
-    setText("pool-flexible-rewards", formatTokenAmount(flex.userRewards));
+    setText("pool-flexible-tvl", formatTokenAmount(flex.tvl, "BEANS"));
+    setText("pool-flexible-staked", formatTokenAmount(flex.userStaked, "BEANS"));
+    setText("pool-flexible-rewards", formatTokenAmount(flex.userRewards, "BEANS"));
   }
 
   const p30 = data.pools["30days"];
   if (p30) {
     setText("pool-30-apr", `${p30.apr}%`);
-    setText("pool-30-tvl", formatTokenAmount(p30.tvl));
-    setText("pool-30-staked", formatTokenAmount(p30.userStaked));
-    setText("pool-30-rewards", formatTokenAmount(p30.userRewards));
+    setText("pool-30-tvl", formatTokenAmount(p30.tvl, "BEANS"));
+    setText("pool-30-staked", formatTokenAmount(p30.userStaked, "BEANS"));
+    setText("pool-30-rewards", formatTokenAmount(p30.userRewards, "BEANS"));
   }
 
   const p90 = data.pools["90days"];
   if (p90) {
     setText("pool-90-apr", `${p90.apr}%`);
-    setText("pool-90-tvl", formatTokenAmount(p90.tvl));
-    setText("pool-90-staked", formatTokenAmount(p90.userStaked));
-    setText("pool-90-rewards", formatTokenAmount(p90.userRewards));
+    setText("pool-90-tvl", formatTokenAmount(p90.tvl, "BEANS"));
+    setText("pool-90-staked", formatTokenAmount(p90.userStaked, "BEANS"));
+    setText("pool-90-rewards", formatTokenAmount(p90.userRewards, "BEANS"));
   }
 }
 
@@ -313,17 +312,17 @@ function initEarningsSimulator() {
     setText("sim-apr", `${formatNumber(apr, 2)}%`);
 
     if (!amount || !days || amount <= 0 || days <= 0) {
-      setText("sim-rewards", "-- $LEAVES");
-      setText("sim-total", "-- $LEAVES");
-      setText("sim-daily-yield", "-- $LEAVES / day");
+      setText("sim-rewards", "-- $BEANS");
+      setText("sim-total", "-- $BEANS");
+      setText("sim-daily-yield", "-- $BEANS / day");
       return;
     }
 
-    setText("sim-rewards", formatTokenAmount(rewards, "LEAVES", 4));
-    setText("sim-total", formatTokenAmount(total, "LEAVES", 4));
+    setText("sim-rewards", formatTokenAmount(rewards, "BEANS", 4));
+    setText("sim-total", formatTokenAmount(total, "BEANS", 4));
     setText(
       "sim-daily-yield",
-      `${formatTokenAmount(dailyYield, "LEAVES", 4)} / day`
+      `${formatTokenAmount(dailyYield, "BEANS", 4)} / day`
     );
   };
 
@@ -341,7 +340,7 @@ function initEarningsSimulator() {
 
 async function connectWallet() {
   // TODO: replace with real EVM provider logic for Ladychain
-  const fakeAddress = "0xLeafHolder1234567890abcdef";
+  const fakeAddress = "0xCoffeeHolics1234567890beef";
   AppState.walletAddress = fakeAddress;
 
   if (!AppState.stakingData) {
@@ -391,7 +390,7 @@ function initStakingButtons() {
       stakeBtn.addEventListener("click", () => {
         const amount = Number(input?.value || 0);
         console.log(`Stake clicked | pool=${poolId} | amount=${amount}`);
-        alert(`Demo: Stake ${amount} LEAVES in pool ${poolId}`);
+        alert(`Demo: Stake ${amount} BEANS in pool ${poolId}`);
         // TODO: call staking contract method here
       });
     }
