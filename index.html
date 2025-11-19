@@ -15,8 +15,8 @@
 </head>
 <body>
   <!-- Loading overlay -->
-  <div id="loading-overlay">
-    <div class="loading-inner">
+  <div id="loading-overlay" aria-hidden="true">
+    <div class="loading-inner" role="status" aria-live="polite">
       <div class="loading-cup">
         <div class="cup-body"></div>
         <div class="cup-handle"></div>
@@ -35,9 +35,9 @@
 
   <div class="page-wrapper">
     <!-- ================= HEADER / NAV ================= -->
-    <header class="site-header">
+    <header class="site-header" role="banner">
       <div class="header-left">
-        <div class="logo">
+        <a href="#hero" class="logo" aria-label="CoffeeHolics home">
           <div class="logo-icon">
             <svg
               class="logo-svg"
@@ -58,13 +58,14 @@
             <span class="logo-title">CoffeeHolics</span>
             <span class="logo-subtitle">$BEANS on Ladychain</span>
           </div>
-        </div>
-        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+        </a>
+
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
 
-      <nav class="main-nav" id="main-nav">
+      <nav class="main-nav" id="main-nav" aria-label="Main navigation">
         <a href="#hero">Home</a>
         <a href="#dashboard">Dashboard</a>
         <a href="#staking">Staking</a>
@@ -82,14 +83,14 @@
     </header>
 
     <!-- Network banner -->
-    <div id="network-banner" class="network-banner">
+    <div id="network-banner" class="network-banner" role="status">
       Please make sure your wallet is connected to <strong>Ladychain (EVM)</strong> before staking or trading $BEANS.
     </div>
 
     <!-- ================= HERO ================= -->
-    <section id="hero" class="hero-section">
+    <section id="hero" class="hero-section" aria-labelledby="hero-title">
       <div class="hero-content">
-        <h1>CoffeeHolics – Brew Your Yield with $BEANS</h1>
+        <h1 id="hero-title">CoffeeHolics – Brew Your Yield with $BEANS</h1>
         <p class="hero-tagline">
           DeFi for people who check charts with a coffee in hand.
         </p>
@@ -120,12 +121,11 @@
         </div>
       </div>
 
-      <div class="hero-visual">
-        <div class="hero-beanfolk-wrap">
-          <!-- Pas het pad aan naar jouw daadwerkelijke bestand -->
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-beanfolk-wrap hero-illustration-fade">
           <img
             src="assets/beanfolk-hero.png"
-            alt="CoffeeHolics Beanfolk barista serving fresh $BEANS"
+            alt=""
             class="hero-beanfolk"
           />
         </div>
@@ -133,9 +133,9 @@
     </section>
 
     <!-- ================= DASHBOARD ================= -->
-    <section id="dashboard" class="section section-dashboard">
+    <section id="dashboard" class="section section-dashboard" aria-labelledby="dashboard-title">
       <div class="section-header">
-        <h2>CoffeeBar Dashboard</h2>
+        <h2 id="dashboard-title">CoffeeBar Dashboard</h2>
         <p>Live on-chain metrics for the CoffeeHolics token ($BEANS) on Ladychain.</p>
       </div>
 
@@ -198,7 +198,7 @@
             <span class="chart-subtitle">Cumulative roast curve</span>
           </div>
           <div class="chart-placeholder" id="burn-chart">
-            <span>Chart placeholder</span>
+            <span>Hook this up to your Ladychain indexer for live burn stats.</span>
           </div>
         </div>
 
@@ -208,7 +208,7 @@
             <span class="chart-subtitle">New wallets joining the café</span>
           </div>
           <div class="chart-placeholder" id="holders-chart">
-            <span>Chart placeholder</span>
+            <span>Hook this up to your Ladychain indexer for holder growth.</span>
           </div>
         </div>
       </div>
@@ -232,7 +232,7 @@
             </div>
           </div>
           <p class="extra-note">
-            Placeholder daily stats – wire this up to your own Ladychain indexer or explorer API.
+            These are demo metrics. Replace DummyApi with your own Ladychain indexer, explorer API or subgraph.
           </p>
         </div>
 
@@ -263,9 +263,9 @@
     </section>
 
     <!-- ================= LATEST TRANSACTIONS ================= -->
-    <section id="latest-tx" class="section section-latest-tx">
+    <section id="latest-tx" class="section section-latest-tx" aria-labelledby="latest-tx-title">
       <div class="section-header">
-        <h2>Latest $BEANS Orders</h2>
+        <h2 id="latest-tx-title">Latest $BEANS Orders</h2>
         <p>Track the most recent $BEANS transactions on Ladychain.</p>
       </div>
 
@@ -290,15 +290,15 @@
     </section>
 
     <!-- ================= STAKING DAPP ================= -->
-    <section id="staking" class="section section-staking">
+    <section id="staking" class="section section-staking" aria-labelledby="staking-title">
       <div class="section-header">
-        <h2>Staking dApp</h2>
+        <h2 id="staking-title">Staking dApp</h2>
         <p>Stake your $BEANS and earn extra rewards from the CoffeeHolics bar.</p>
       </div>
 
       <div class="staking-layout">
         <!-- USER SUMMARY -->
-        <aside class="staking-summary card-grain ink-outline soft-shadow">
+        <aside class="staking-summary card-grain ink-outline soft-shadow" aria-label="Wallet staking summary">
           <h3>Your Coffee Tab</h3>
           <div class="summary-item">
             <span class="summary-label">Connected Wallet</span>
@@ -329,7 +329,7 @@
         </aside>
 
         <!-- POOLS LIST -->
-        <div class="staking-pools">
+        <div class="staking-pools" aria-label="Staking pools">
           <!-- POOL 1: FLEXIBLE -->
           <div class="pool-card card-grain ink-outline soft-shadow card-stain" data-pool-id="flexible">
             <div class="pool-header">
@@ -379,7 +379,7 @@
             </div>
 
             <p class="pool-footnote">
-              No early unstake penalty. Perfect for short coffee breaks.
+              <span>No early unstake penalty. Perfect for short coffee breaks.</span>
             </p>
           </div>
 
@@ -432,7 +432,7 @@
             </div>
 
             <p class="pool-footnote">
-              Early unstake may incur a penalty and partial loss of rewards.
+              <span>Early unstake may incur a penalty and partial loss of rewards.</span>
               <span class="countdown" id="pool-30-countdown">Lock countdown: --:--:--</span>
             </p>
           </div>
@@ -486,7 +486,7 @@
             </div>
 
             <p class="pool-footnote">
-              Higher APR with strict lockup. Early unstake includes penalty and forfeited rewards.
+              <span>Higher APR with strict lockup. Early unstake includes penalty and forfeited rewards.</span>
               <span class="countdown" id="pool-90-countdown">Lock countdown: --:--:--</span>
             </p>
           </div>
@@ -585,9 +585,9 @@
     </section>
 
     <!-- ================= LOYALTY / TIERS ================= -->
-    <section id="loyalty" class="section section-loyalty">
+    <section id="loyalty" class="section section-loyalty" aria-labelledby="loyalty-title">
       <div class="section-header">
-        <h2>Loyalty Tiers</h2>
+        <h2 id="loyalty-title">Loyalty Tiers</h2>
         <p>Café-inspired tiers based on your staked $BEANS and time in the café.</p>
       </div>
 
@@ -630,9 +630,9 @@
     </section>
 
     <!-- ================= TOKENOMICS ================= -->
-    <section id="tokenomics" class="section section-tokenomics">
+    <section id="tokenomics" class="section section-tokenomics" aria-labelledby="tokenomics-title">
       <div class="section-header">
-        <h2>Tokenomics</h2>
+        <h2 id="tokenomics-title">Tokenomics</h2>
         <p>Deflationary café mechanics designed to reward true CoffeeHolics.</p>
       </div>
 
@@ -670,9 +670,9 @@
     </section>
 
     <!-- ================= CONTRACTS & SECURITY ================= -->
-    <section id="contracts" class="section section-contracts">
+    <section id="contracts" class="section section-contracts" aria-labelledby="contracts-title">
       <div class="section-header">
-        <h2>Contracts & Security</h2>
+        <h2 id="contracts-title">Contracts & Security</h2>
         <p>Official $BEANS smart contract references. Always verify before you interact.</p>
       </div>
 
@@ -711,9 +711,9 @@
     </section>
 
     <!-- ================= ABOUT ================= -->
-    <section id="about" class="section section-about">
+    <section id="about" class="section section-about" aria-labelledby="about-title">
       <div class="section-header">
-        <h2>About CoffeeHolics</h2>
+        <h2 id="about-title">About CoffeeHolics</h2>
       </div>
 
       <div class="about-content card-grain ink-outline">
@@ -740,9 +740,9 @@
     </section>
 
     <!-- ================= ROADMAP ================= -->
-    <section id="roadmap" class="section section-roadmap">
+    <section id="roadmap" class="section section-roadmap" aria-labelledby="roadmap-title">
       <div class="section-header">
-        <h2>Roadmap</h2>
+        <h2 id="roadmap-title">Roadmap</h2>
         <p>How the CoffeeHolics café grows over time.</p>
       </div>
 
@@ -783,9 +783,9 @@
     </section>
 
     <!-- ================= LINKS / RESOURCES ================= -->
-    <section id="links" class="section section-links">
+    <section id="links" class="section section-links" aria-labelledby="links-title">
       <div class="section-header">
-        <h2>Links & Resources</h2>
+        <h2 id="links-title">Links & Resources</h2>
         <p>Key resources to explore the CoffeeHolics ecosystem.</p>
       </div>
 

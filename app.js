@@ -1,4 +1,4 @@
-// app.js - CoffeeHolics ($BEANS) Dashboard & Staking dApp structure
+// app.js - CoffeeHolics ($BEANS) Dashboard & Staking dApp UI layer
 
 // ===================== BASIC HELPERS ===================== //
 
@@ -44,7 +44,7 @@ function formatCurrency(num, currency = "USD", decimals = 2) {
   }).format(num);
 }
 
-// Very simple time-ago formatter for demo
+// Simple time-ago formatter for demo
 function timeAgo(date) {
   if (!date) return "";
   const now = new Date();
@@ -189,7 +189,7 @@ function hideLoading() {
     overlay.classList.remove("visible");
   }
 
-  // Café entrance animatie op de hele app
+  // Café entrance animation on the whole app
   const wrapper = document.querySelector(".page-wrapper");
   if (wrapper) {
     wrapper.classList.add("page-enter");
@@ -488,7 +488,7 @@ function initEarningsSimulator() {
   poolSelect.addEventListener("change", update);
 }
 
-// ===================== WALLET CONNECT (SKELETON) ===================== //
+// ===================== WALLET CONNECT (DEMO) ===================== //
 
 async function connectWallet() {
   // TODO: replace with real EVM provider logic for Ladychain
@@ -527,7 +527,7 @@ function initWalletButton() {
   }
 }
 
-// ===================== STAKING ACTION HANDLERS (SKELETON) ===================== //
+// ===================== STAKING ACTION HANDLERS (DEMO) ===================== //
 
 function initStakingButtons() {
   const poolCards = $all(".pool-card");
@@ -544,7 +544,7 @@ function initStakingButtons() {
         const amount = Number(input?.value || 0);
         console.log(`Stake clicked | pool=${poolId} | amount=${amount}`);
         showToast(`Demo: Stake ${amount || 0} BEANS in pool ${poolId}`, "success");
-        spawnBeanDrop(card); // vallende boon bij stake
+        spawnBeanDrop(card); // falling bean on stake
         // TODO: call staking contract method here
       });
     }
@@ -553,7 +553,6 @@ function initStakingButtons() {
       unstakeBtn.addEventListener("click", () => {
         console.log(`Unstake clicked | pool=${poolId}`);
         showToast(`Demo: Unstake from pool ${poolId}`, "success");
-        // optioneel: spawnBeanDrop(card);
         // TODO: call unstake method here
       });
     }
@@ -570,7 +569,7 @@ function initStakingButtons() {
   });
 }
 
-// ===================== NAV TOGGLE ===================== //
+// ===================== NAV TOGGLE + SCROLLSPY ===================== //
 
 function initNavToggle() {
   const toggle = $("#nav-toggle");
@@ -578,8 +577,9 @@ function initNavToggle() {
   if (!toggle || !nav) return;
 
   toggle.addEventListener("click", () => {
-    toggle.classList.toggle("active");
+    const isActive = toggle.classList.toggle("active");
     nav.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", isActive ? "true" : "false");
   });
 
   $all("#main-nav a").forEach((link) => {
@@ -587,9 +587,60 @@ function initNavToggle() {
       if (nav.classList.contains("open")) {
         nav.classList.remove("open");
         toggle.classList.remove("active");
+        toggle.setAttribute("aria-expanded", "false");
       }
     });
   });
+}
+
+function initScrollSpy() {
+  const navLinks = Array.from(document.querySelectorAll("#main-nav a"));
+  if (!navLinks.length) return;
+
+  const sections = navLinks
+    .map((link) => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
+
+  if (!sections.length) return;
+
+  const linkForId = {};
+  navLinks.forEach((link) => {
+    const id = link.getAttribute("href")?.slice(1);
+    if (id) linkForId[id] = link;
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const id = entry.target.id;
+        const link = linkForId[id];
+        if (!link) return;
+
+        if (entry.isIntersecting) {
+          navLinks.forEach((l) => l.classList.remove("nav-link-active"));
+          link.classList.add("nav-link-active");
+        }
+      });
+    },
+    {
+      rootMargin: "-55% 0px -40% 0px",
+      threshold: 0.2
+    }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+
+  // Header shadow on scroll
+  const updateHeaderShadow = () => {
+    if (window.scrollY > 16) {
+      document.body.classList.add("header-shadow");
+    } else {
+      document.body.classList.remove("header-shadow");
+    }
+  };
+
+  window.addEventListener("scroll", updateHeaderShadow, { passive: true });
+  updateHeaderShadow();
 }
 
 // ===================== INIT / MAIN ===================== //
@@ -628,6 +679,7 @@ async function loadInitialData() {
 function initApp() {
   renderCurrentYear();
   initNavToggle();
+  initScrollSpy();
   initWalletButton();
   initStakingButtons();
   initEarningsSimulator();
