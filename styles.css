@@ -1654,7 +1654,7 @@ body.header-shadow .site-header {
 .loading-sub {
   margin-top: 2px;
   font-size: 11px;
-  color: var(--text-soft);
+  color: var(--text-main);
 }
 
 /* ============= BEAN DROP ANIMATION (STAKE / CLAIM) ============= */
