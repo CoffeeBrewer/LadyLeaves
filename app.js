@@ -12,7 +12,9 @@ function $all(selector) {
 
 function setText(id, value) {
   const el = document.getElementById(id);
-  if (el) el.textContent = value;
+  if (!el) return;
+  el.textContent = value;
+  el.classList.remove("skeleton");
 }
 
 function shortAddress(addr, length = 4) {
@@ -63,22 +65,25 @@ function timeAgo(date) {
 
 const DummyApi = {
   async fetchDashboardStats() {
-    await new Promise((res) => setTimeout(res, 300));
+    await new Promise((res) => setTimeout(res, 600));
 
     return {
       totalSupply: 100_000_000,
       circulatingSupply: 92_500_000,
       totalBurned: 7_500_000,
       totalReflections: 1_250_000,
-      holderCount: 1842,
+      holderCount: 1_842,
       txCount: 25_137,
       marketCapUsd: 1_250_000,
-      tokenPriceUsd: 0.0135
+      tokenPriceUsd: 0.0135,
+      volume24hUsd: 32_000,
+      burned24h: 42_000,
+      reflections24h: 18_500
     };
   },
 
   async fetchLatestTransactions(limit = 10) {
-    await new Promise((res) => setTimeout(res, 300));
+    await new Promise((res) => setTimeout(res, 400));
 
     const now = new Date();
     return Array.from({ length: limit }).map((_, i) => ({
@@ -91,7 +96,7 @@ const DummyApi = {
   },
 
   async fetchStakingData() {
-    await new Promise((res) => setTimeout(res, 300));
+    await new Promise((res) => setTimeout(res, 400));
 
     return {
       wallet: {
@@ -132,6 +137,24 @@ const DummyApi = {
         }
       }
     };
+  },
+
+  async fetchTopHolders(limit = 5) {
+    await new Promise((res) => setTimeout(res, 300));
+
+    const totalSupply = 100_000_000;
+    const base = [
+      { address: "0xCafeWhale111111111111111111", balance: 12_000_000 },
+      { address: "0xLatteHolder22222222222222", balance: 8_500_000 },
+      { address: "0xEspresso3333333333333333", balance: 5_250_000 },
+      { address: "0xBeans444444444444444444", balance: 3_100_000 },
+      { address: "0xCup55555555555555555555", balance: 2_250_000 }
+    ];
+
+    return base.slice(0, limit).map((h) => ({
+      ...h,
+      share: (h.balance / totalSupply) * 100
+    }));
   }
 };
 
@@ -141,8 +164,78 @@ const AppState = {
   walletAddress: null,
   stakingData: null,
   dashboardStats: null,
-  latestTx: []
+  latestTx: [],
+  topHolders: [],
+  loading: false
 };
+
+// ===================== LOADING OVERLAY ===================== //
+
+function showLoading(message = "Brewing fresh on-chain data...") {
+  const overlay = $("#loading-overlay");
+  if (!overlay) return;
+
+  const msgEl = $("#loading-message");
+  if (msgEl) msgEl.textContent = message;
+
+  AppState.loading = true;
+  overlay.classList.add("visible");
+}
+
+function hideLoading() {
+  const overlay = $("#loading-overlay");
+  if (!overlay) return;
+  AppState.loading = false;
+  overlay.classList.remove("visible");
+}
+
+// ===================== TOASTS ===================== //
+
+function showToast(message, type = "success", timeout = 3000) {
+  const container = $("#toast-container");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
+  const p = document.createElement("p");
+  p.className = "toast-message";
+  p.textContent = message;
+  toast.appendChild(p);
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(8px)";
+    setTimeout(() => {
+      toast.remove();
+    }, 200);
+  }, timeout);
+}
+
+// ===================== VISUAL EFFECTS (BEAN + SPARKLE) ===================== //
+
+function spawnBeanDrop(cardElement) {
+  if (!cardElement) return;
+  const bean = document.createElement("div");
+  bean.className = "bean-drop";
+  cardElement.appendChild(bean);
+
+  bean.addEventListener("animationend", () => {
+    bean.remove();
+  });
+}
+
+function spawnSparkle(cardElement) {
+  if (!cardElement) return;
+  const spark = document.createElement("div");
+  spark.className = "sparkle-burst";
+  cardElement.appendChild(spark);
+
+  spark.addEventListener("animationend", () => {
+    spark.remove();
+  });
+}
 
 // ===================== RENDER FUNCTIONS ===================== //
 
@@ -160,6 +253,11 @@ function renderDashboard(stats) {
   setText("tx-count", formatNumber(stats.txCount));
   setText("market-cap", formatCurrency(stats.marketCapUsd));
   setText("token-price", `$${formatNumber(stats.tokenPriceUsd, 4)}`);
+
+  // extra metrics
+  setText("vol-24h", `${formatCurrency(stats.volume24hUsd)} / 24h`);
+  setText("burn-24h", formatTokenAmount(stats.burned24h, "BEANS"));
+  setText("refl-24h", formatTokenAmount(stats.reflections24h, "BEANS"));
 }
 
 function renderLatestTransactions(txs) {
@@ -195,12 +293,51 @@ function renderLatestTransactions(txs) {
     tr.appendChild(toTd);
 
     const amountTd = document.createElement("td");
-    amountTd.textContent = formatTokenAmount(tx.amount);
+    amountTd.textContent = formatTokenAmount(tx.amount, "BEANS");
     tr.appendChild(amountTd);
 
     const timeTd = document.createElement("td");
     timeTd.textContent = timeAgo(tx.timestamp);
     tr.appendChild(timeTd);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function renderTopHolders(holders) {
+  const tbody = $("#holders-body");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  if (!holders || holders.length === 0) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 4;
+    cell.textContent = "No holder data available.";
+    row.appendChild(cell);
+    tbody.appendChild(row);
+    return;
+  }
+
+  holders.forEach((h, idx) => {
+    const tr = document.createElement("tr");
+
+    const rankTd = document.createElement("td");
+    rankTd.textContent = idx + 1;
+    tr.appendChild(rankTd);
+
+    const addrTd = document.createElement("td");
+    addrTd.textContent = shortAddress(h.address, 4);
+    tr.appendChild(addrTd);
+
+    const balTd = document.createElement("td");
+    balTd.textContent = formatTokenAmount(h.balance, "BEANS");
+    tr.appendChild(balTd);
+
+    const shareTd = document.createElement("td");
+    shareTd.textContent = `${formatNumber(h.share, 2)}%`;
+    tr.appendChild(shareTd);
 
     tbody.appendChild(tr);
   });
@@ -250,7 +387,7 @@ function renderStakingPools(data) {
   }
 }
 
-// ===================== EARNINGS SIMULATOR LOGIC ===================== //
+// ===================== EARNINGS SIMULATOR ===================== //
 
 function getPoolApr(poolId) {
   if (AppState.stakingData && AppState.stakingData.pools) {
@@ -350,9 +487,10 @@ async function connectWallet() {
   AppState.stakingData.wallet.address = fakeAddress;
 
   renderStakingOverview(AppState.stakingData);
+  renderStakingPools(AppState.stakingData);
 
   console.log("Wallet connected:", fakeAddress);
-  alert("Demo: Wallet connected as " + shortAddress(fakeAddress));
+  showToast("Demo: Wallet connected as " + shortAddress(fakeAddress), "success");
 }
 
 function initWalletButton() {
@@ -390,7 +528,8 @@ function initStakingButtons() {
       stakeBtn.addEventListener("click", () => {
         const amount = Number(input?.value || 0);
         console.log(`Stake clicked | pool=${poolId} | amount=${amount}`);
-        alert(`Demo: Stake ${amount} BEANS in pool ${poolId}`);
+        showToast(`Demo: Stake ${amount || 0} BEANS in pool ${poolId}`, "success");
+        spawnBeanDrop(card); // vallende boon bij stake
         // TODO: call staking contract method here
       });
     }
@@ -398,7 +537,8 @@ function initStakingButtons() {
     if (unstakeBtn) {
       unstakeBtn.addEventListener("click", () => {
         console.log(`Unstake clicked | pool=${poolId}`);
-        alert(`Demo: Unstake from pool ${poolId}`);
+        showToast(`Demo: Unstake from pool ${poolId}`, "success");
+        // optioneel: spawnBeanDrop(card);
         // TODO: call unstake method here
       });
     }
@@ -406,10 +546,34 @@ function initStakingButtons() {
     if (claimBtn) {
       claimBtn.addEventListener("click", () => {
         console.log(`Claim rewards clicked | pool=${poolId}`);
-        alert(`Demo: Claim rewards from pool ${poolId}`);
+        showToast(`Demo: Claim rewards from pool ${poolId}`, "success");
+        spawnBeanDrop(card);
+        spawnSparkle(card);
         // TODO: call claim rewards method here
       });
     }
+  });
+}
+
+// ===================== NAV TOGGLE ===================== //
+
+function initNavToggle() {
+  const toggle = $("#nav-toggle");
+  const nav = $("#main-nav");
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener("click", () => {
+    toggle.classList.toggle("active");
+    nav.classList.toggle("open");
+  });
+
+  $all("#main-nav a").forEach((link) => {
+    link.addEventListener("click", () => {
+      if (nav.classList.contains("open")) {
+        nav.classList.remove("open");
+        toggle.classList.remove("active");
+      }
+    });
   });
 }
 
@@ -417,25 +581,38 @@ function initStakingButtons() {
 
 async function loadInitialData() {
   try {
+    showLoading("Brewing fresh $BEANS data...");
+
     const stats = await DummyApi.fetchDashboardStats();
     AppState.dashboardStats = stats;
     renderDashboard(stats);
 
-    const txs = await DummyApi.fetchLatestTransactions(10);
+    const [txs, stakingData, holders] = await Promise.all([
+      DummyApi.fetchLatestTransactions(10),
+      DummyApi.fetchStakingData(),
+      DummyApi.fetchTopHolders(5)
+    ]);
+
     AppState.latestTx = txs;
     renderLatestTransactions(txs);
 
-    const stakingData = await DummyApi.fetchStakingData();
     AppState.stakingData = stakingData;
     renderStakingOverview(stakingData);
     renderStakingPools(stakingData);
+
+    AppState.topHolders = holders;
+    renderTopHolders(holders);
   } catch (err) {
     console.error("Error loading initial data:", err);
+    showToast("Error loading data (demo). Check console for details.", "error");
+  } finally {
+    hideLoading();
   }
 }
 
 function initApp() {
   renderCurrentYear();
+  initNavToggle();
   initWalletButton();
   initStakingButtons();
   initEarningsSimulator();
