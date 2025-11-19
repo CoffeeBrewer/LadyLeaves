@@ -184,9 +184,24 @@ function showLoading(message = "Brewing fresh on-chain data...") {
 
 function hideLoading() {
   const overlay = $("#loading-overlay");
-  if (!overlay) return;
-  AppState.loading = false;
-  overlay.classList.remove("visible");
+  if (overlay) {
+    AppState.loading = false;
+    overlay.classList.remove("visible");
+  }
+
+  // Café entrance animatie op de hele app
+  const wrapper = document.querySelector(".page-wrapper");
+  if (wrapper) {
+    wrapper.classList.add("page-enter");
+
+    wrapper.addEventListener(
+      "animationend",
+      () => {
+        wrapper.classList.remove("page-enter");
+      },
+      { once: true }
+    );
+  }
 }
 
 // ===================== TOASTS ===================== //
