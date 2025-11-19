@@ -1696,3 +1696,20 @@ body::after {
     font-size: 22px;
   }
 }
+
+.hero-illustration-fade {
+  position: relative;
+  display: inline-block;
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    rgba(0,0,0,1) 60%,
+    rgba(0,0,0,0) 100%
+  );
+  mask-image: radial-gradient(
+    circle at center,
+    rgba(0,0,0,1) 60%,
+    rgba(0,0,0,0) 100%
+  );
+  -webkit-mask-size: cover;
+  mask-size: cover;
+}
