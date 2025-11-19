@@ -1748,3 +1748,30 @@ body::after {
   -webkit-mask-size: cover;
   mask-size: cover;
 }
+
+/* === Stronger text contrast for CoffeeBar dashboard === */
+
+.section-dashboard h2,
+.section-dashboard h3,
+.stat-card-title,
+.stat-card h4,
+.stat-title,
+.section-dashboard .label,
+.section-dashboard .stat-label {
+  color: var(--text-dark) !important;
+  font-weight: 600 !important;
+}
+
+.stat-value,
+.stat-number,
+.section-dashboard .value,
+.section-dashboard strong {
+  color: var(--coffee-dark) !important;
+  font-weight: 700 !important;
+}
+
+.section-dashboard p,
+.stat-card p,
+.stat-description {
+  color: var(--text-main) !important;
+}
