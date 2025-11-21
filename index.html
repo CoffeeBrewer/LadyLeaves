@@ -132,6 +132,49 @@
       </div>
     </section>
 
+    <section id="bar" class="section section-dashboard">
+  <div class="section-header">
+    <h2>The Bar – Swap LADY for $BEANS</h2>
+    <p>
+      Order fresh $BEANS directly at the Coffee DEX. You pay in LADY, the bar serves you BEANS.
+    </p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="card-grain ink-outline soft-shadow" style="grid-column: span 2; max-width: 480px;">
+      <label class="ch-label" for="ladyInput">You pay (LADY)</label>
+      <div class="ch-input-wrapper">
+        <input
+          id="ladyInput"
+          type="number"
+          min="0"
+          step="0.0001"
+          placeholder="0.0"
+          class="ch-input input"
+        />
+        <span class="ch-input-tag">LADY</span>
+      </div>
+
+      <label class="ch-label">You receive (approx. BEANS)</label>
+      <div class="ch-input-wrapper ch-input-display">
+        <div id="beansOutput" class="ch-input-display-value">0.0</div>
+        <span class="ch-input-tag">$BEANS</span>
+      </div>
+
+      <p id="priceInfo" class="ch-help-text">
+        Live estimate from the Coffee DEX.
+      </p>
+<button id="connectWalletBtn" class="btn btn-outline ch-wallet-btn">
+  Connect Wallet for DEX
+</button>
+
+      <button id="buyBeansBtn" class="btn btn-primary brew-pulse ch-btn ch-btn-full">
+        Buy BEANS
+      </button>
+    </div>
+  </div>
+</section>
+
     <!-- ================= DASHBOARD ================= -->
     <section id="dashboard" class="section section-dashboard" aria-labelledby="dashboard-title">
       <div class="section-header">
@@ -835,7 +878,14 @@
   <!-- Toast notifications -->
   <div id="toast-container"></div>
 
-  <!-- JS App -->
-  <script src="app.js"></script>
+<!-- Ethers for the DEX bar -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
+
+<!-- Coffee Bar DEX logic (LADY -> BEANS) -->
+<script src="coffee-bar-dex.js" defer></script>
+
+<!-- Your existing app logic -->
+<script src="app.js"></script>
 </body>
 </html>
+

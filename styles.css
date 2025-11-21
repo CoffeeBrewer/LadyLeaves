@@ -1922,3 +1922,65 @@ body.header-shadow .site-header {
     flex-direction: column;
   }
 }
+/* ========== Coffee Bar DEX styling ========== */
+
+.ch-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-soft);
+  margin-bottom: 4px;
+}
+
+.ch-input-wrapper {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.ch-input {
+  width: 100%;
+  padding-right: 60px;
+}
+
+.ch-input-tag {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fdf3e7;
+  border: 1px solid rgba(217, 188, 164, 0.9);
+  color: var(--coffee-mid);
+}
+
+.ch-input-display {
+  background: #fef9f4;
+  border-radius: 999px;
+  border: 1px solid rgba(197, 163, 136, 0.9);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ch-input-display-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--coffee-mid);
+}
+
+.ch-help-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 4px 0 8px;
+}
+
+.ch-btn-full {
+  width: 100%;
+}
+
+.ch-wallet-btn {
+  font-size: 12px;
+}
+

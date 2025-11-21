@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Coffeeholics • Play-to-Progress op LadyChain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Coffeeholics is het eerste gamified play-to-progress ecosysteem op LadyChain. Verdien $BEANS en Coffeeholics NFT's door quests te doen." />
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #05030b;
+      --bg-soft: #0a0615;
+      --bg-card: #120a24;
+      --bg-chip: #231237;
+      --accent: #ffb347;
+      --accent-strong: #ff7a3c;
+      --accent-soft: rgba(255, 179, 71, 0.12);
+      --text: #f8f3ff;
+      --muted: #aaa0c7;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --radius-xl: 1.5rem;
+      --radius-lg: 1rem;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
+      --shadow-glow: 0 0 30px rgba(255, 179, 71, 0.35);
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.28s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, #2c1444 0, transparent 50%),
+        radial-gradient(circle at 100% 0%, #3a1b2f 0, transparent 50%),
+        radial-gradient(circle at 50% 100%, #1c1b37 0, transparent 55%),
+        var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAVBAR */
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(5, 3, 11, 0.9), rgba(5, 3, 11, 0.6));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-mark {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 1.1rem;
+      background: radial-gradient(circle at 30% 0%, #ffe9c6 0, #ffb347 35%, #ff7a3c 70%, #7d4222 100%);
+      box-shadow: var(--shadow-glow);
+      font-size: 1.4rem;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .logo-subtitle {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .nav-link {
+      position: relative;
+      padding: 0.15rem 0;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.2rem;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+      transition: width var(--transition-fast);
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      border-radius: var(--radius-pill);
+      padding: 0.55rem 1.3rem;
+      border: 1px solid transparent;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #1a0d05;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.75);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--border-subtle);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(255, 255, 255, 0.26);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--text);
+      margin: 4px 0;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    /* MAIN LAYOUT */
+
+    .main {
+      flex: 1;
+    }
+
+    .section {
+      padding: 3.5rem 1.25rem;
+    }
+
+    .section-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    /* HERO */
+
+    .hero {
+      padding-top: 4rem;
+      padding-bottom: 3.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
+      gap: 2.75rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      padding: 0.25rem 0.8rem;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: 1rem;
+    }
+
+    .eyebrow-pill {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(255, 179, 71, 0.8);
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 3.1vw + 1.6rem, 3.5rem);
+      line-height: 1.05;
+      margin-bottom: 1.1rem;
+    }
+
+    .hero-title span.gradient {
+      background: linear-gradient(120deg, #ffe9c6, #ffb347, #ff7a3c);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+      max-width: 34rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hero-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .hero-card {
+      background: radial-gradient(circle at 10% 0%, rgba(255, 179, 71, 0.2), transparent 55%), var(--bg-soft);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 1.75rem 1.6rem;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 120% -10%, rgba(255, 122, 60, 0.3), transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .hero-card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .chip {
+      padding: 0.15rem 0.7rem;
+      border-radius: var(--radius-pill);
+      background: rgba(4, 1, 14, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    .card-heading {
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .card-main-number {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-main-label {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+
+    .rarity-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .rarity-card {
+      padding: 0.65rem 0.75rem;
+      border-radius: 0.9rem;
+      background: rgba(7, 3, 21, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      font-size: 0.78rem;
+    }
+
+    .rarity-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .rarity-tag {
+      padding: 0.05rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(255, 179, 71, 0.16);
+      font-size: 0.7rem;
+    }
+
+    .rarity-sub {
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-top: 0.8rem;
+      margin-top: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .dot-soft {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* FEATURES / HOW IT WORKS */
+
+    .section-title {
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .section-kicker {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-description {
+      max-width: 36rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 1.3rem 1.2rem;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 0.85rem;
+      background: rgba(255, 179, 71, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .feature-title {
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 0.7rem;
+    }
+
+    .feature-tagline {
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .step-card {
+      border-radius: var(--radius-lg);
+      border: 1px dashed rgba(255, 255, 255, 0.13);
+      background: rgba(6, 4, 19, 0.95);
+      padding: 1rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .step-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+
+    .step-title {
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+      color: var(--text);
+    }
+
+    /* NFT / TOKEN SECTION */
+
+    .dual-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr);
+      gap: 1.75rem;
+      align-items: flex-start;
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      padding: 1.4rem 1.3rem;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .panel-pill {
+      padding: 0.15rem 0.7rem;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .rarity-table {
+      width: 100%;
+      border-spacing: 0;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      margin-top: 0.3rem;
+    }
+
+    .rarity-table thead {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .rarity-table th,
+    .rarity-table td {
+      padding: 0.4rem 0.35rem;
+      text-align: left;
+    }
+
+    .rarity-table tbody tr:nth-child(odd) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .rarity-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.12rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(255, 179, 71, 0.18);
+      font-size: 0.76rem;
+    }
+
+    .token-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 0.3rem 0 0.8rem;
+    }
+
+    .token-list li::before {
+      content: "•";
+      margin-right: 0.4rem;
+      color: var(--accent);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.3rem;
+    }
+
+    .mini-pill {
+      padding: 0.1rem 0.55rem;
+      font-size: 0.7rem;
+      border-radius: 999px;
+      background: var(--bg-chip);
+      color: var(--muted);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* ROADMAP */
+
+    .roadmap {
+      margin-top: 0.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.2rem;
+    }
+
+    .roadmap-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 1rem 1rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .roadmap-phase {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .roadmap-title {
+      font-size: 0.98rem;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    .roadmap-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .roadmap-list li {
+      margin-bottom: 0.2rem;
+    }
+
+    .roadmap-list li::before {
+      content: "›";
+      margin-right: 0.3rem;
+      color: var(--accent);
+    }
+
+    /* WAITLIST / CTA */
+
+    .cta {
+      text-align: center;
+      margin-top: 0.75rem;
+    }
+
+    .cta-heading {
+      font-size: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .cta-text {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 28rem;
+      margin: 0 auto 1.2rem;
+    }
+
+    .cta-form {
+      max-width: 420px;
+      margin: 0.5rem auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .input {
+      flex: 1 1 180px;
+      padding: 0.7rem 0.9rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(6, 4, 19, 0.95);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+
+    .input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .input:focus {
+      border-color: rgba(255, 179, 71, 0.9);
+      box-shadow: 0 0 0 1px rgba(255, 179, 71, 0.4);
+      background: rgba(10, 6, 26, 1);
+    }
+
+    .note {
+      margin-top: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* FOOTER */
+
+    .footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 1.2rem 1.25rem 2.2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .footer-links a {
+      opacity: 0.8;
+    }
+
+    .footer-links a:hover {
+      opacity: 1;
+      color: var(--accent);
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .steps-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dual-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .roadmap {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-inner {
+        padding-inline: 1rem;
+      }
+
+      .nav-links,
+      .nav-cta {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-menu-open .nav-links,
+      .nav-menu-open .nav-cta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+      }
+
+      .nav-inner.nav-menu-open {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        row-gap: 0.75rem;
+      }
+
+      .hero {
+        padding-top: 2.5rem;
+      }
+
+      .section {
+        padding-inline: 1rem;
+      }
+
+      .feature-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .steps-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .roadmap {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .cta-form {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- NAVBAR -->
+    <header class="nav">
+      <div class="nav-inner" id="navbar">
+        <div class="nav-left">
+          <div class="logo-mark">☕</div>
+          <div class="logo-text">
+            <div class="logo-title">Coffeeholics</div>
+            <div class="logo-subtitle">On-chain quests • $BEANS • NFTs</div>
+          </div>
+        </div>
+
+        <nav class="nav-links">
+          <a href="#about" class="nav-link">Wat is dit?</a>
+          <a href="#how" class="nav-link">Hoe het werkt</a>
+          <a href="#nft" class="nav-link">NFT Collectie</a>
+          <a href="#token" class="nav-link">$BEANS Token</a>
+          <a href="#roadmap" class="nav-link">Roadmap</a>
+        </nav>
+
+        <div class="nav-cta">
+          <button class="btn btn-ghost" onclick="scrollToSection('waitlist')">Docs / Litepaper</button>
+          <button class="btn btn-primary" onclick="scrollToSection('waitlist')">Join de waitlist</button>
+        </div>
+
+        <button class="nav-toggle" aria-label="Toggle navigatie" id="navToggle">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+      <!-- HERO -->
+      <section class="section hero" id="top">
+        <div class="section-inner hero-grid">
+          <div>
+            <div class="eyebrow">
+              <span class="eyebrow-pill"></span>
+              Play-to-Progress op LadyChain
+            </div>
+            <h1 class="hero-title">
+              Verdien <span class="gradient">$BEANS</span> & Coffeeholics NFT’s
+              door simpelweg <span class="gradient">quests te doen</span>.
+            </h1>
+            <p class="hero-subtitle">
+              Coffeeholics is een gamified economy bovenop LadyChain. Geen paywall, geen dure mints.
+              Iedereen start zonder assets en bouwt zijn weg omhoog met on-chain quests, $BEANS en NFT’s.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="scrollToSection('waitlist')">
+                Join de vroege waitlist
+                <span>→</span>
+              </button>
+              <button class="btn btn-ghost" onclick="scrollToSection('how')">
+                Bekijk hoe het werkt
+              </button>
+            </div>
+            <div class="hero-meta">
+              <span><span class="hero-badge-dot"></span> Gebouwd voor LadyChain (1s blocks, ultra low fees)</span>
+              <span>⚡ Volledig on-chain quest engine</span>
+              <span>☕ 10.000 Coffeeholics NFT’s, earnable via gameplay</span>
+            </div>
+          </div>
+
+          <aside class="hero-card" aria-label="Coffeeholics NFT & odds">
+            <div class="hero-card-inner">
+              <div class="chip-row">
+                <span class="chip">10.000 NFT’s</span>
+                <span class="chip">$BEANS utility</span>
+                <span class="chip">LadyChain native</span>
+              </div>
+              <div class="card-heading">Coffeeholics Collectie</div>
+              <div class="card-main-number">🎴 10.000</div>
+              <div class="card-main-label">Volledig earnable via quests • geen verplichte mint</div>
+
+              <div class="rarity-grid">
+                <div class="rarity-card">
+                  <div class="rarity-title">
+                    <span>☕ Coffeeholic</span>
+                    <span class="rarity-tag">60%</span>
+                  </div>
+                  <div class="rarity-sub">Core member • XP & daily boosts</div>
+                </div>
+                <div class="rarity-card">
+                  <div class="rarity-title">
+                    <span>🕵️ BeanThief</span>
+                    <span class="rarity-tag">25%</span>
+                  </div>
+                  <div class="rarity-sub">High risk/high reward • BEANS jackpots</div>
+                </div>
+                <div class="rarity-card">
+                  <div class="rarity-title">
+                    <span>👨‍🍳 Barista</span>
+                    <span class="rarity-tag">10%</span>
+                  </div>
+                  <div class="rarity-sub">Crafting & buff items</div>
+                </div>
+                <div class="rarity-card">
+                  <div class="rarity-title">
+                    <span>🏬 Café</span>
+                    <span class="rarity-tag">5%</span>
+                  </div>
+                  <div class="rarity-sub">Ultra rare • passieve yield & premium quests</div>
+                </div>
+              </div>
+
+              <div class="hero-stats">
+                <span><span class="dot-soft"></span> Zero-barrier onboarding: start zonder NFT of tokens</span>
+                <span><span class="dot-soft"></span> Quests → earn $BEANS → stake & unlock meer</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ABOUT / FEATURES -->
+      <section class="section" id="about">
+        <div class="section-inner">
+          <div class="section-kicker">Waarom Coffeeholics?</div>
+          <h2 class="section-title">Een on-chain game-economie gebouwd voor snelheid.</h2>
+          <p class="section-description">
+            Coffeeholics laat zien wat er mogelijk is op LadyChain: near-instant blocks, bijna nul fees en
+            honderden micro-interacties per speler. Geen walled garden, maar een open quest- en reward
+            laag die spelers beloont voor activiteit – niet voor hun bankrekening.
+          </p>
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <div class="feature-icon">🎮</div>
+              <h3 class="feature-title">Play-to-Progress</h3>
+              <p class="feature-text">
+                Iedereen start zonder NFT of tokens. Door simpele on-chain quests te doen, verdien je XP,
+                $BEANS en uiteindelijk Coffeeholics NFT’s. Geen buy-in nodig.
+              </p>
+              <div class="feature-tagline">Skill & activiteit boven kapitaal.</div>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3 class="feature-title">LadyChain Native</h3>
+              <p class="feature-text">
+                1-seconde blokken en extreem lage fees maken echte on-chain interactie mogelijk:
+                streaks, crafting, random events & micro-rewards – zonder dat het duur wordt.
+              </p>
+              <div class="feature-tagline">Voelt als een game, is volledig on-chain.</div>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon">☕</div>
+              <h3 class="feature-title">Levendige CoffeeVerse</h3>
+              <p class="feature-text">
+                Coffeeholics, BeanThiefs, Barista’s en Café-eigenaars vormen samen een dynamisch
+                universum vol perks, multipliers, staking boosts en seizoensevents.
+              </p>
+              <div class="feature-tagline">Karakter, humor en utility in één.</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section class="section" id="how">
+        <div class="section-inner">
+          <div class="section-kicker">Hoe het werkt</div>
+          <h2 class="section-title">Zero-barrier onboarding. Pure on-chain progression.</h2>
+          <p class="section-description">
+            Coffeeholics is gebouwd als een progression tree. Quests vormen de basis. XP bepaalt je level.
+            $BEANS is de brandstof. Coffeeholics NFT’s zijn je power-ups. Alles start bij één simpele quest.
+          </p>
+
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-label">Stap 1</div>
+              <div class="step-title">Start zonder iets</div>
+              <p>
+                Connect je wallet, doe je eerste on-chain interactie en verdien je eerste XP en een paar $BEANS.
+                Geen mint, geen inleg, geen risico.
+              </p>
+            </div>
+            <div class="step-card">
+              <div class="step-label">Stap 2</div>
+              <div class="step-title">Grind quests, verdien $BEANS</div>
+              <p>
+                Onboarding-, daily- en milestone-quests verhogen je level en vullen je $BEANS saldo.
+                Langzaam ontgrendel je meer content.
+              </p>
+            </div>
+            <div class="step-card">
+              <div class="step-label">Stap 3</div>
+              <div class="step-title">Claim je eerste NFT</div>
+              <p>
+                Met Coffee Tickets (verdient via quests) mint je gratis een Coffeeholics NFT. Jouw rol bepaalt
+                welke extra quests en multipliers je krijgt.
+              </p>
+            </div>
+            <div class="step-card">
+              <div class="step-label">Stap 4</div>
+              <div class="step-title">Stake, craft & prestige</div>
+              <p>
+                Staking, crafting, seizoensevents en prestige-levels zorgen voor long-term progression
+                en een levendige on-chain economie.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NFT + TOKEN -->
+      <section class="section" id="nft">
+        <div class="section-inner">
+          <div class="section-kicker">Ecosysteem</div>
+          <h2 class="section-title">Coffeeholics NFT’s + $BEANS Token</h2>
+          <p class="section-description">
+            NFT’s zijn niet de toegangspoort, maar de beloning. $BEANS is de utility-token die alles met
+            elkaar verbindt: rewards, boosts, staking en crafting. Samen vormen ze het CoffeeVerse.
+          </p>
+
+          <div class="dual-grid">
+            <!-- NFT PANEL -->
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">Coffeeholics Collectie · 10.000 NFT’s</div>
+                  <div style="font-size:0.85rem;color:var(--muted);margin-top:0.15rem;">
+                    Volledig earnable via quests • geen verplichte mint • zero-barrier
+                  </div>
+                </div>
+                <div class="panel-pill">Rarity & rollen</div>
+              </div>
+
+              <table class="rarity-table" aria-label="NFT kansen en rollen">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Kans</th>
+                    <th>Rol in het spel</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="rarity-chip">☕ Coffeeholic</span></td>
+                    <td>60%</td>
+                    <td>Core member, XP boosts, daily quests</td>
+                  </tr>
+                  <tr>
+                    <td><span class="rarity-chip">🕵️ BeanThief</span></td>
+                    <td>25%</td>
+                    <td>High risk / reward, BEANS jackpots & extra quests</td>
+                  </tr>
+                  <tr>
+                    <td><span class="rarity-chip">👨‍🍳 Barista</span></td>
+                    <td>10%</td>
+                    <td>Crafting, buff items, economy support</td>
+                  </tr>
+                  <tr>
+                    <td><span class="rarity-chip">🏬 Café</span></td>
+                    <td>5%</td>
+                    <td>Ultra rare, passieve yield & premium access</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="pill-row">
+                <span class="mini-pill">Earnable, niet buy-only</span>
+                <span class="mini-pill">On-chain progression items</span>
+                <span class="mini-pill">Utility-first design</span>
+              </div>
+            </div>
+
+            <!-- TOKEN PANEL -->
+            <div class="panel" id="token">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">$BEANS · Coffeeholics Utility Token</div>
+                  <div style="font-size:0.85rem;color:var(--muted);margin-top:0.15rem;">
+                    Verdien door quests · gebruik voor boosts, staking & crafting
+                  </div>
+                </div>
+                <div class="panel-pill">Utility lagen</div>
+              </div>
+
+              <ul class="token-list">
+                <li><strong>Quest rewards:</strong> basisinkomen voor elke actieve speler, schaalbaar via dailies, weeklies en milestones.</li>
+                <li><strong>Staking:</strong> lock $BEANS voor passieve opbrengsten en hogere quest-rewards.</li>
+                <li><strong>Boosts & crafting:</strong> gebruik $BEANS om tijdelijke multipliers en seizoensitems te maken.</li>
+                <li><strong>Future governance:</strong> stem op nieuwe quests, seizoenen en economic tweaks.</li>
+              </ul>
+
+              <div class="pill-row">
+                <span class="mini-pill">Play-to-earn (zonder paywall)</span>
+                <span class="mini-pill">Inflatie gestuurd door seizoenen</span>
+                <span class="mini-pill">Geoptimaliseerd voor LadyChain fees</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROADMAP -->
+      <section class="section" id="roadmap">
+        <div class="section-inner">
+          <div class="section-kicker">Roadmap</div>
+          <h2 class="section-title">Van proof-of-fun naar volledige CoffeeVerse.</h2>
+          <p class="section-description">
+            We starten lean met een solide on-chain quest engine en bouwen daarna door richting volledige
+            seizoenseconomie, crafting en governance. Altijd spel-first, speculatie-second.
+          </p>
+
+          <div class="roadmap">
+            <article class="roadmap-card">
+              <div class="roadmap-phase">Fase 1</div>
+              <div class="roadmap-title">MVP & Testnet</div>
+              <ul class="roadmap-list">
+                <li>Core quest engine op LadyChain</li>
+                <li>XP, levels en basis $BEANS rewards</li>
+                <li>Coffee Ticket systeem voor eerste NFT’s</li>
+                <li>Kleine gesloten test-groep</li>
+              </ul>
+            </article>
+
+            <article class="roadmap-card">
+              <div class="roadmap-phase">Fase 2</div>
+              <div class="roadmap-title">Mainnet Launch</div>
+              <ul class="roadmap-list">
+                <li>10.000 Coffeeholics NFT’s earnable via quests</li>
+                <li>$BEANS staking & multipliers</li>
+                <li>Daily & weekly quest-rotaties</li>
+                <li>Eerste seizoensevent (Season 1: First Brew)</li>
+              </ul>
+            </article>
+
+            <article class="roadmap-card">
+              <div class="roadmap-phase">Fase 3</div>
+              <div class="roadmap-title">CoffeeVerse & Beyond</div>
+              <ul class="roadmap-list">
+                <li>Crafting & buff-items (Barista focus)</li>
+                <li>Café-owner dashboards & passieve yield</li>
+                <li>Creator quests & externe projecten op LadyChain</li>
+                <li>Governance & community-led balancing</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- WAITLIST / CTA -->
+      <section class="section" id="waitlist">
+        <div class="section-inner cta">
+          <h2 class="cta-heading">Wil je vroege toegang tot Coffeeholics?</h2>
+          <p class="cta-text">
+            Laat je e-mailadres achter en we sturen je een invite zodra de eerste Coffeeholics quests live gaan
+            op LadyChain. Geen spam, geen onzin – alleen koffie en alfa.
+          </p>
+
+          <form class="cta-form" onsubmit="handleWaitlist(event)">
+            <input
+              type="email"
+              class="input"
+              id="emailInput"
+              name="email"
+              placeholder="jij@voorbeeld.com"
+              required
+            />
+            <button type="submit" class="btn btn-primary">
+              Join de waitlist
+            </button>
+          </form>
+          <div class="note" id="waitlistNote">
+            * We zijn nog in actieve ontwikkeling. Vroege testers krijgen extra $BEANS & een kans op zeldzame NFT’s.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>© <span id="year"></span> Coffeeholics · Gebouwd op LadyChain · Ticker: $BEANS</div>
+        <div class="footer-links">
+          <a href="#top">Terug naar boven</a>
+          <a href="#about">Over</a>
+          <a href="#waitlist">Waitlist</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Smooth scroll helper (extra bovenop CSS scroll-behavior, voor oudere browsers)
+    function scrollToSection(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // Simple mobile nav toggle
+    const navToggle = document.getElementById("navToggle");
+    const navbar = document.getElementById("navbar");
+
+    if (navToggle && navbar) {
+      navToggle.addEventListener("click", function () {
+        navbar.classList.toggle("nav-menu-open");
+      });
+    }
+
+    // Waitlist handler (front-end only demo)
+    function handleWaitlist(event) {
+      event.preventDefault();
+      const emailInput = document.getElementById("emailInput");
+      const note = document.getElementById("waitlistNote");
+      const email = emailInput.value.trim();
+
+      if (!email) return;
+
+      // Hier kun je later een echte API-call integreren
+      emailInput.value = "";
+      emailInput.blur();
+
+      note.textContent = "Dank je! We hebben je toegevoegd aan de vroege waitlist. ☕";
+    }
+
+    // Dynamisch jaartal in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
