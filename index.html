@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>CoffeeHolics – $BEANS Dashboard & Staking dApp</title>
+  <title>CoffeeHolics – $BEANS Café on Ladychain</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Google Font -->
@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- CSS -->
+  <!-- Main CSS -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -66,15 +66,14 @@
       </div>
 
       <nav class="main-nav" id="main-nav" aria-label="Main navigation">
-        <a href="#hero">Home</a>
+        <a href="#hero">Entrance</a>
+        <a href="#bar">The Bar</a>
         <a href="#dashboard">Dashboard</a>
-        <a href="#staking">Staking</a>
-        <a href="#tokenomics">Tokenomics</a>
+        <a href="#staking">Coffee Bar (Staking)</a>
         <a href="#loyalty">Loyalty</a>
-        <a href="#contracts">Contracts</a>
-        <a href="#about">About</a>
-        <a href="#roadmap">Roadmap</a>
-        <a href="#links">Links</a>
+        <a href="#tokenomics">Tokenomics</a>
+        <a href="#contracts">Backroom</a>
+        <a href="#links">Notice Board</a>
       </nav>
 
       <button class="btn btn-outline brew-pulse" id="connect-wallet-btn">
@@ -90,19 +89,18 @@
     <!-- ================= HERO ================= -->
     <section id="hero" class="hero-section" aria-labelledby="hero-title">
       <div class="hero-content">
-        <h1 id="hero-title">CoffeeHolics – Brew Your Yield with $BEANS</h1>
+        <h1 id="hero-title">Welcome to the CoffeeHolics Café</h1>
         <p class="hero-tagline">
-          DeFi for people who check charts with a coffee in hand.
+          A warm little coffee spot on Ladychain — where your $BEANS quietly brew more beans.
         </p>
         <p class="hero-description">
-          CoffeeHolics is a café-themed, deflationary token on Ladychain. Every $BEANS transaction
-          roasts a small part of the supply and pours reflections back to holders – while staking pools
-          quietly brew extra rewards in the background.
+          Take a seat, grab your favorite brew, and explore the Coffee Bar. Behind the counter,
+          smart contracts roast, drip and pour rewards for loyal CoffeeHolics.
         </p>
 
         <div class="hero-actions">
-          <a href="#staking" class="btn btn-primary brew-pulse">Open Staking dApp</a>
-          <a href="#dashboard" class="btn btn-ghost">View CoffeeBar Dashboard</a>
+          <a href="#staking" class="btn btn-primary brew-pulse">Enter the Coffee Bar</a>
+          <a href="#bar" class="btn btn-ghost">Order BEANS at the Bar</a>
         </div>
 
         <div class="hero-meta">
@@ -123,6 +121,7 @@
 
       <div class="hero-visual" aria-hidden="true">
         <div class="hero-beanfolk-wrap hero-illustration-fade">
+          <!-- Vervang dit pad met jouw eigen asset indien nodig -->
           <img
             src="assets/beanfolk-hero.png"
             alt=""
@@ -132,54 +131,56 @@
       </div>
     </section>
 
-    <section id="bar" class="section section-dashboard">
-  <div class="section-header">
-    <h2>The Bar – Swap LADY for $BEANS</h2>
-    <p>
-      Order fresh $BEANS directly at the Coffee DEX. You pay in LADY, the bar serves you BEANS.
-    </p>
-  </div>
-
-  <div class="stats-grid">
-    <div class="card-grain ink-outline soft-shadow" style="grid-column: span 2; max-width: 480px;">
-      <label class="ch-label" for="ladyInput">You pay (LADY)</label>
-      <div class="ch-input-wrapper">
-        <input
-          id="ladyInput"
-          type="number"
-          min="0"
-          step="0.0001"
-          placeholder="0.0"
-          class="ch-input input"
-        />
-        <span class="ch-input-tag">LADY</span>
+    <!-- ================= BEANS DEX BAR ================= -->
+    <section id="bar" class="section section-dashboard" aria-labelledby="bar-title">
+      <div class="section-header">
+        <h2 id="bar-title">The Bar – Swap LADY for $BEANS</h2>
+        <p>
+          Order fresh $BEANS directly at the Coffee DEX. You pay in LADY, the bar serves you BEANS.
+        </p>
       </div>
 
-      <label class="ch-label">You receive (approx. BEANS)</label>
-      <div class="ch-input-wrapper ch-input-display">
-        <div id="beansOutput" class="ch-input-display-value">0.0</div>
-        <span class="ch-input-tag">$BEANS</span>
+      <div class="stats-grid">
+        <div class="card-grain ink-outline soft-shadow" style="grid-column: span 2; max-width: 480px;">
+          <label class="ch-label" for="ladyInput">You pay (LADY)</label>
+          <div class="ch-input-wrapper">
+            <input
+              id="ladyInput"
+              type="number"
+              min="0"
+              step="0.0001"
+              placeholder="0.0"
+              class="ch-input input"
+            />
+            <span class="ch-input-tag">LADY</span>
+          </div>
+
+          <label class="ch-label">You receive (approx. BEANS)</label>
+          <div class="ch-input-wrapper ch-input-display">
+            <div id="beansOutput" class="ch-input-display-value">0.0</div>
+            <span class="ch-input-tag">$BEANS</span>
+          </div>
+
+          <p id="priceInfo" class="ch-help-text">
+            Live estimate from the Coffee DEX.
+          </p>
+
+          <button id="connectWalletBtn" class="btn btn-outline ch-wallet-btn" style="margin-bottom: 6px;">
+            Connect Wallet for DEX
+          </button>
+
+          <button id="buyBeansBtn" class="btn btn-primary brew-pulse ch-btn ch-btn-full">
+            Buy BEANS
+          </button>
+        </div>
       </div>
-
-      <p id="priceInfo" class="ch-help-text">
-        Live estimate from the Coffee DEX.
-      </p>
-<button id="connectWalletBtn" class="btn btn-outline ch-wallet-btn">
-  Connect Wallet for DEX
-</button>
-
-      <button id="buyBeansBtn" class="btn btn-primary brew-pulse ch-btn ch-btn-full">
-        Buy BEANS
-      </button>
-    </div>
-  </div>
-</section>
+    </section>
 
     <!-- ================= DASHBOARD ================= -->
     <section id="dashboard" class="section section-dashboard" aria-labelledby="dashboard-title">
       <div class="section-header">
         <h2 id="dashboard-title">CoffeeBar Dashboard</h2>
-        <p>Live on-chain metrics for the CoffeeHolics token ($BEANS) on Ladychain.</p>
+        <p>Live on-chain style metrics for the CoffeeHolics token ($BEANS) on Ladychain.</p>
       </div>
 
       <!-- STAT GRID -->
@@ -187,49 +188,49 @@
         <div class="stat-card card-grain ink-outline">
           <span class="stat-label">Total Supply</span>
           <span class="stat-value skeleton" id="total-supply">--</span>
-          <span class="stat-sub">Initial roasted $BEANS</span>
+          <span class="stat-sub">All $BEANS ever roasted for this café.</span>
         </div>
 
         <div class="stat-card card-grain ink-outline">
           <span class="stat-label">Circulating Supply</span>
           <span class="stat-value skeleton" id="circulating-supply">--</span>
-          <span class="stat-sub">Beans still in circulation</span>
+          <span class="stat-sub">Beans currently in cups, wallets and staking pots.</span>
         </div>
 
         <div class="stat-card card-grain ink-outline">
           <span class="stat-label">Total Burned</span>
           <span class="stat-value skeleton" id="total-burned">--</span>
-          <span class="stat-sub">Beans roasted out of existence (1% per tx)</span>
+          <span class="stat-sub">Beans roasted beyond recovery – permanently off the shelf.</span>
         </div>
 
         <div class="stat-card card-grain ink-outline">
           <span class="stat-label">Total Reflections</span>
           <span class="stat-value skeleton" id="total-reflections">--</span>
-          <span class="stat-sub">Loyalty beans poured back to holders (1% per tx)</span>
+          <span class="stat-sub">Loyalty beans poured back to CoffeeHolics so far.</span>
         </div>
 
         <div class="stat-card card-grain ink-outline">
           <span class="stat-label">Number of Holders</span>
           <span class="stat-value skeleton" id="wallet-count">--</span>
-          <span class="stat-sub">Unique wallets in the CoffeeHolics café</span>
+          <span class="stat-sub">Unique wallets seated in the café.</span>
         </div>
 
         <div class="stat-card card-grain ink-outline">
           <span class="stat-label">Total Transactions</span>
           <span class="stat-value skeleton" id="tx-count">--</span>
-          <span class="stat-sub">All-time coffee orders on-chain</span>
+          <span class="stat-sub">All-time coffee orders on-chain.</span>
         </div>
 
         <div class="stat-card card-grain ink-outline">
           <span class="stat-label">Market Cap</span>
           <span class="stat-value skeleton" id="market-cap">--</span>
-          <span class="stat-sub">Based on the latest $BEANS price</span>
+          <span class="stat-sub">Based on the latest $BEANS price.</span>
         </div>
 
         <div class="stat-card card-grain ink-outline">
           <span class="stat-label">Current Price</span>
           <span class="stat-value skeleton" id="token-price">--</span>
-          <span class="stat-sub">$BEANS per LADY / USD</span>
+          <span class="stat-sub">$BEANS per LADY / USD.</span>
         </div>
       </div>
 
@@ -255,88 +256,14 @@
           </div>
         </div>
       </div>
-
-      <!-- EXTRA METRICS + TOP HOLDERS -->
-      <div class="dashboard-extra-grid">
-        <div class="extra-card card-grain ink-outline">
-          <h3>Daily Roast Overview</h3>
-          <div class="extra-metrics">
-            <div class="extra-metric">
-              <span class="extra-label">24h Volume</span>
-              <span class="extra-value skeleton" id="vol-24h">--</span>
-            </div>
-            <div class="extra-metric">
-              <span class="extra-label">24h Burned</span>
-              <span class="extra-value skeleton" id="burn-24h">--</span>
-            </div>
-            <div class="extra-metric">
-              <span class="extra-label">24h Reflections</span>
-              <span class="extra-value skeleton" id="refl-24h">--</span>
-            </div>
-          </div>
-          <p class="extra-note">
-            These are demo metrics. Replace DummyApi with your own Ladychain indexer, explorer API or subgraph.
-          </p>
-        </div>
-
-        <div class="extra-card card-grain ink-outline">
-          <h3>Top Holders</h3>
-          <p class="extra-sub">
-            Snapshot of the largest wallets in the CoffeeHolics café.
-          </p>
-          <div class="table-wrapper small-table">
-            <table class="tx-table holders-table">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Address</th>
-                  <th>Balance</th>
-                  <th>Share</th>
-                </tr>
-              </thead>
-              <tbody id="holders-body">
-                <tr>
-                  <td colspan="4">Loading top holders...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= LATEST TRANSACTIONS ================= -->
-    <section id="latest-tx" class="section section-latest-tx" aria-labelledby="latest-tx-title">
-      <div class="section-header">
-        <h2 id="latest-tx-title">Latest $BEANS Orders</h2>
-        <p>Track the most recent $BEANS transactions on Ladychain.</p>
-      </div>
-
-      <div class="table-wrapper">
-        <table class="tx-table">
-          <thead>
-            <tr>
-              <th>Txn Hash</th>
-              <th>From</th>
-              <th>To</th>
-              <th>Amount</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody id="latest-tx-body">
-            <tr class="skeleton-row">
-              <td colspan="5">Loading recent transactions...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- Let op: Dashboard extra-grid (Daily Roast Overview + Top Holders) is bewust verwijderd -->
     </section>
 
     <!-- ================= STAKING DAPP ================= -->
     <section id="staking" class="section section-staking" aria-labelledby="staking-title">
       <div class="section-header">
-        <h2 id="staking-title">Staking dApp</h2>
-        <p>Stake your $BEANS and earn extra rewards from the CoffeeHolics bar.</p>
+        <h2 id="staking-title">Coffee Bar – Staking dApp</h2>
+        <p>Leave your $BEANS with the barista and let the yield quietly brew over time.</p>
       </div>
 
       <div class="staking-layout">
@@ -715,7 +642,7 @@
     <!-- ================= CONTRACTS & SECURITY ================= -->
     <section id="contracts" class="section section-contracts" aria-labelledby="contracts-title">
       <div class="section-header">
-        <h2 id="contracts-title">Contracts & Security</h2>
+        <h2 id="contracts-title">Backroom – Contracts & Security</h2>
         <p>Official $BEANS smart contract references. Always verify before you interact.</p>
       </div>
 
@@ -753,82 +680,10 @@
       </div>
     </section>
 
-    <!-- ================= ABOUT ================= -->
-    <section id="about" class="section section-about" aria-labelledby="about-title">
-      <div class="section-header">
-        <h2 id="about-title">About CoffeeHolics</h2>
-      </div>
-
-      <div class="about-content card-grain ink-outline">
-        <p>
-          CoffeeHolics is a café-inspired DeFi project built on Ladychain (EVM), centered around the $BEANS token.
-          Instead of flashing charts and aggressive trading dashboards, CoffeeHolics aims to feel like your favorite
-          coffee place: warm, calm, and quietly productive.
-        </p>
-        <p>
-          Every transaction in $BEANS applies a simple mechanic: a small portion is burned forever, reducing the total
-          supply, while another portion is redistributed back to holders as reflections — loyalty beans for everyone who
-          sticks around.
-        </p>
-        <p>
-          On top of that, CoffeeHolics offers multiple staking pools themed after iconic coffee styles. From flexible
-          Espresso staking for active users, to longer Latte and Cold Brew locks for patient CoffeeHolics, each pool
-          comes with its own rhythm and reward profile.
-        </p>
-        <p>
-          The vision is simple: turn checking your wallet into a familiar ritual. Brew your yield over time, keep an eye
-          on the CoffeeBar dashboard, and grow together with the Beanfolk who call this little corner of Ladychain home.
-        </p>
-      </div>
-    </section>
-
-    <!-- ================= ROADMAP ================= -->
-    <section id="roadmap" class="section section-roadmap" aria-labelledby="roadmap-title">
-      <div class="section-header">
-        <h2 id="roadmap-title">Roadmap</h2>
-        <p>How the CoffeeHolics café grows over time.</p>
-      </div>
-
-      <div class="roadmap-timeline">
-        <div class="roadmap-item">
-          <div class="roadmap-dot"></div>
-          <div class="roadmap-content card-grain ink-outline">
-            <h3>Phase 1 – First Brew</h3>
-            <p>
-              Token launch on Ladychain, initial liquidity, listing on community DEXs,
-              deployment of the first staking pools, and release of the CoffeeBar dashboard.
-            </p>
-          </div>
-        </div>
-
-        <div class="roadmap-item">
-          <div class="roadmap-dot"></div>
-          <div class="roadmap-content card-grain ink-outline">
-            <h3>Phase 2 – Daily Ritual</h3>
-            <p>
-              Expansion of staking options, loyalty-style rewards, partnerships with other
-              Ladychain projects, and richer analytics for the dashboard.
-            </p>
-          </div>
-        </div>
-
-        <div class="roadmap-item">
-          <div class="roadmap-dot"></div>
-          <div class="roadmap-content card-grain ink-outline">
-            <h3>Phase 3 – Coffee Empire</h3>
-            <p>
-              Advanced DeFi integrations, governance features, ecosystem grants,
-              and extended $BEANS utilities across dApps and platforms.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ================= LINKS / RESOURCES ================= -->
     <section id="links" class="section section-links" aria-labelledby="links-title">
       <div class="section-header">
-        <h2 id="links-title">Links & Resources</h2>
+        <h2 id="links-title">Notice Board – Links & Resources</h2>
         <p>Key resources to explore the CoffeeHolics ecosystem.</p>
       </div>
 
@@ -878,14 +733,13 @@
   <!-- Toast notifications -->
   <div id="toast-container"></div>
 
-<!-- Ethers for the DEX bar -->
-<script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
+  <!-- Ethers for the DEX bar -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
 
-<!-- Coffee Bar DEX logic (LADY -> BEANS) -->
-<script src="coffee-bar-dex.js" defer></script>
+  <!-- Coffee Bar DEX logic (LADY -> BEANS) -->
+  <script src="coffee-bar-dex.js" defer></script>
 
-<!-- Your existing app logic -->
-<script src="app.js"></script>
+  <!-- Main app logic -->
+  <script src="app.js"></script>
 </body>
 </html>
-

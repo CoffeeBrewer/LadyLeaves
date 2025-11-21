@@ -1,60 +1,66 @@
 :root {
-  /* === CoffeeHolics Premium Palette === */
+  /* ===== CoffeeHolics – Chestnut / Olive / Desert Tan / Caramel / Copper ===== */
 
-  /* Paper / backgrounds */
-  --paper-light: #F6EDE3;
-  --paper: #EFE3D6;
-  --paper-dark: #E6D5C2;
+  /* Palette from image */
+  --chestnut:   #480903;
+  --olive:      #937A24;
+  --desert-tan: #E5D1A4;
+  --caramel:    #CE793A;
+  --copper:     #B64B12;
 
-  /* Coffee tones */
-  --coffee-dark: #2A1A13;
-  --coffee: #4A2D1A;
-  --coffee-medium: #6B4430;
-  --coffee-light: #8F6C52;
+  /* Paper / backgrounds – based on Desert Tan */
+  --paper-light: #F6E8D2;      /* iets lichter dan desert tan voor achtergrond */
+  --paper:       #E5D1A4;      /* desert tan */
+  --paper-dark:  #D4BF99;      /* iets donkerder variant */
 
-  /* Accents (caramel) */
-  --caramel: #C97F4E;
-  --caramel-light: #E6A67A;
+  /* Coffee tones – opgebouwd uit de donkere en warme kleuren */
+  --coffee-dark:   var(--chestnut);  /* diep donkerbruin/rood */
+  --coffee:        var(--copper);    /* warme kopertoon */
+  --coffee-medium: var(--caramel);   /* lichtere oranje-caramel */
+  --coffee-light:  var(--olive);     /* olijfgroen accent */
+
+  /* Accents */
+  --caramel-main:  var(--caramel);
+  --caramel-soft:  rgba(206, 121, 58, 0.18);
 
   /* Foam / highlights */
-  --foam: #FFF9F1;
-  --foam-soft: #FFF4E6;
+  --foam:      #FFF8EF;
+  --foam-soft: #FCEFD9;
 
-  /* Green beans (sparingly) */
-  --greenbean: #5E7A3C;
-  --greenbean-soft: #9DB586;
+  /* Optioneel groen accent als je het nog ergens gebruikt */
+  --greenbean:      var(--olive);
+  --greenbean-soft: rgba(147, 122, 36, 0.35);
 
   /* Shadows */
-  --shadow-soft: 0 10px 30px rgba(75, 46, 36, 0.18);
-  --shadow-strong: 0 18px 40px rgba(75, 46, 36, 0.28);
+  --shadow-soft:   0 10px 30px rgba(72, 9, 3, 0.2);   /* chestnut-based */
+  --shadow-strong: 0 18px 40px rgba(72, 9, 3, 0.3);
 
   /* Text */
-  --text-dark: var(--coffee-dark);
-  --text-main: #3C2A1E;
-  --text-muted: rgba(60, 42, 30, 0.58);
-  --text-soft: rgba(60, 42, 30, 0.42);
+  --text-dark:  var(--coffee-dark);
+  --text-main:  #3B2417;
+  --text-muted: rgba(59, 36, 23, 0.7);
+  --text-soft:  rgba(59, 36, 23, 0.5);
 
-  /* Borders */
-  --border-subtle: rgba(85, 55, 30, 0.28);
-  --border-strong: rgba(85, 55, 30, 0.45);
+  /* Borders – warme copper/chestnut mix */
+  --border-subtle: rgba(182, 75, 18, 0.35);
+  --border-strong: rgba(182, 75, 18, 0.6);
 
-  /* Legacy compatibility */
-  --bg-body: var(--paper-light);
-  --bg-surface: var(--paper);
+  /* Global backgrounds (gebruik je al verder in de CSS) */
+  --bg-body:         var(--paper-light);
+  --bg-surface:      var(--paper);
   --bg-surface-soft: var(--paper-dark);
 
-  --coffee-mid: var(--coffee-medium);
-  --coffee-light: var(--coffee-light);
+  /* Legacy compat (oude namen die je al gebruikt had) */
+  --coffee-mid:   var(--coffee-medium);
+  --accent:       var(--caramel);
+  --accent-soft:  var(--caramel-soft);
 
-  --accent: var(--caramel);
-  --accent-soft: rgba(201, 127, 78, 0.18);
-
+  /* Radii / spacing kun je laten zoals het was – ik laat die staan */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
 
-  /* Spacing scale (premium layout) */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -65,6 +71,7 @@
   --space-8: 32px;
   --space-9: 40px;
 }
+
 
 /* ================= GLOBAL RESET ================= */
 
@@ -79,8 +86,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--bg-body);
-  background-image:
+  background-color: var(--paper-light);
+    background-image:
     radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.7) 0, transparent 55%),
     radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.7) 0, transparent 55%),
     repeating-linear-gradient(
